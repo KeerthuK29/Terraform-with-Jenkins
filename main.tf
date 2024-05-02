@@ -34,15 +34,15 @@ resource "aws_iam_policy_attachment" "policy_attach" {
   policy_arn = aws_iam_policy.example_policy.arn
 
 }
-resource "aws_iam_instance_profile" "example_profile" {
-  name = "example_profile"
-  role = aws_iam_role.example_role.name
+//resource "aws_iam_instance_profile" "example_profile" {
+  //name = "example_profile"
+  //role = aws_iam_role.example_role.name
 
-}
+//}
 resource "aws_instance" "example_instance" {
   instance_type        = var.ec2_instance_type
   ami                  = var.image_id
-  iam_instance_profile = aws_iam_instance_profile.example_profile.name
+ // iam_instance_profile = aws_iam_instance_profile.example_profile.name
 
 }
 
