@@ -2,33 +2,38 @@ pipeline {
   agent any
 
   parameters {
-    choice(name: 'action', choices: ['plan', 'apply'], description: 'Terraform action to perform')
+    choice(name:'Branch',choices:['kk-branch'],description:'Select the Branch')
+    choice(name: 'action', choices: ['plan', 'apply','destroy'], description: 'Terraform action to perform')
   }
    environment {
         AWS_ACCESS_KEY_ID     = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+    
     }
 
   stages {
     stage('Checkout Code') {
-      steps {
       
-        git branch: 'master', url:'https://github.com/KeerthuK29/Terraform-with-Jenkins.git'
+      steps {
+        script{
+         
+      
+          git branch:"${params.Branch}", url:'https://github.com/KeerthuK29/Jenkins_Terraform_Integration.git'
         }
-    
+      }
     }
-    stage('Terraform run'){
+    stage('Terraform Initialize'){
       steps{
           bat 'C:\\Users\\kesavank\\Terraform\\terraform init'
         
       }
     }
-    stage('Terraform Action') {
+    stage('Terraform Plan') {
       when {
         expression { return params.action == 'plan' }
       }
       steps {
-            bat "C:\\Users\\kesavank\\Terraform\\terraform plan"
+            bat 'C:\\Users\\kesavank\\Terraform\\terraform plan'
       }
     }
     stage('Terraform Apply ') {
@@ -36,7 +41,15 @@ pipeline {
         expression { return params.action == 'apply' }
       }
       steps {
-          bat "C:\\Users\\kesavank\\Terraform\\terraform apply -auto-approve"
+          bat 'C:\\Users\\kesavank\\Terraform\\terraform apply -auto-approve'
+    }
+  }
+     stage('Terraform Destroy ') {
+      when {
+        expression { return params.action == 'destroy' }
+      }
+      steps {
+          bat 'C:\\Users\\kesavank\\Terraform\\terraform destroy -auto-approve'
     }
   }
 }
